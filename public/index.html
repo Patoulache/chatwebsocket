@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <meta charset="utf-8" />
+
+        <title>Super Chat temps réel !</title>
+
+        <style>
+
+            #zone_chat strong {
+
+                color: white;
+
+                background-color: lightgreen;
+
+                padding: 2px;
+
+            }
+
+            #co_users {
+                height: 200px;
+                width: 200px;
+                border: solid black 1px;
+            }
+
+            span {
+                font-weight: bold;
+            }
+
+            .chatprive {
+                height: 300px;
+                width: 200px;
+                border: solid 1px black;
+            }
+
+            .chatprive input {
+                width: 200px
+            }
+
+        </style>
+
+    </head>
+<!-- faire un fichier css -->
+    <body>
+
+        <h1>Le super Chat temps réel !</h1>
+
+        <p><a href="http://localhost:8080" target="_blank">nouveau client</a></p>
+
+
+        <form action="/" method="post" id="formulaire_chat">
+
+            <input type="text" name="message" id="message" placeholder="Votre message..." size="50" autofocus />
+
+            <input type="submit" id="envoi_message" value="Envoyer" />
+
+        </form>
+
+
+        <section id="zone_chat">
+
+        </section>
+
+        <section id="co_users">
+
+        </section>
+
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+        <script src="/socket.io/socket.io.js"></script>
+
+        <script src="/client.js"></script>
+
+    </body>
+
+</html>
