@@ -13,9 +13,7 @@
             #zone_chat strong {
 
                 color: white;
-
                 background-color: lightgreen;
-
                 padding: 2px;
 
             }
@@ -26,18 +24,36 @@
                 border: solid black 1px;
             }
 
-            span {
-                font-weight: bold;
-            }
-
             .chatprive {
+                position: relative;
                 height: 300px;
                 width: 200px;
                 border: solid 1px black;
             }
+            .chatprive form {
+                position: absolute;
+                bottom:0;
+                left: 0;
+            }
 
-            .chatprive input {
-                width: 200px
+            #blabla {
+                overflow: scroll;
+                height: 270px;
+                word-wrap: break-word;
+            }
+
+            .chatprive form :nth-child(1) {
+                display: inline-block;
+                width: 130px;
+                height: 20px;
+                padding: 0;
+            }
+
+            .chatprive form :nth-child(2) {
+                display: inline-block;
+                width: 50px;
+                height: 30px;
+                padding: 0 4px 0 2px;
             }
 
         </style>

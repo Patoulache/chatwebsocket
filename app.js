@@ -55,7 +55,17 @@ io.sockets.on('connection', function (socket) {
 
         io.emit('message', {pseudo: socket.pseudo, message: message});
 
-    }); 
+    });
+
+    // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on letransmet aux autres personnes
+    socket.on('privMess', function (message, corres) {
+        console.log(message);
+        console.log(corres);        
+        message = ent.encode(message);
+        socket.to(corres).emit('privMess', {pseudo: socket.pseudo, message: message, corres: corres});
+        socket.emit('privMess', {pseudo: socket.pseudo, message: message, corres: corres});
+
+    });
 
 });
 
