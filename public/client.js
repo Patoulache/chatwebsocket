@@ -42,10 +42,23 @@ socket.on('client_left', function(pseudo) {
 // récupére et affiche les messages privés dans la bonne div
 
 socket.on('privMess', function(obj) {
-    var divChat = document.querySelector('#'.concat(pseudo).concat(obj.corres).concat(' #blabla'));
-    console.log(divChat);    
-    divChat.innerHTML += '<p><strong>' + obj.pseudo + '</strong> ' + obj.message + '</p>';
-    divChat.scrollTop = divChat.scrollHeight;
+    if (obj.corres == pseudo && !document.querySelector('#'.concat(pseudo).concat(obj.pseudo))) {
+        // Création de la div chat privé chez le destinataire
+        createDiv(pseudo, obj.pseudo)
+        var divChat = document.querySelector('#'.concat(pseudo).concat(obj.pseudo).concat(' #blabla'));
+        divChat.innerHTML += '<p><strong>' + obj.pseudo + '</strong> ' + obj.message + '</p>';
+        divChat.scrollTop = divChat.scrollHeight;
+    } else if (document.querySelector('#'.concat(pseudo).concat(obj.corres))) {
+        // Actualisation messages chat chez l'expéditeur
+        var divChat = document.querySelector('#'.concat(pseudo).concat(obj.corres).concat(' #blabla'));
+        divChat.innerHTML += '<p><strong>' + obj.pseudo + '</strong> ' + obj.message + '</p>';
+        divChat.scrollTop = divChat.scrollHeight;
+    } else if (document.querySelector('#'.concat(pseudo).concat(obj.pseudo))) {
+        // Actualisation messages chat chez le destinataire
+        var divChat = document.querySelector('#'.concat(pseudo).concat(obj.pseudo).concat(' #blabla'));
+        divChat.innerHTML += '<p><strong>' + obj.pseudo + '</strong> ' + obj.message + '</p>';
+        divChat.scrollTop = divChat.scrollHeight;
+    }
 });
 
 // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
@@ -73,13 +86,15 @@ function listener(evt) {
 };
 
 // Création div chat privé
-// todo : mettre titre/entête à la div et créer une div juste pour l'affichage de la conv
+// todo : mettre titre/entête à la div et créer une div juste pour l'affichage des convs
 function createDiv(pseudo, corres) {
+    // création de tous les composants du chat privé
     var newDiv = document.createElement("div");
     var blabla = document.createElement("div");
     var newForm = document.createElement("form");
     var newInput = document.createElement("input");
     var newButton = document.createElement("button");
+    // Implémentation des attributs qui vont bien
     newDiv.id = pseudo.concat(corres);
     newDiv.className = "chatprive";
     blabla.id = "blabla";
@@ -88,13 +103,16 @@ function createDiv(pseudo, corres) {
     newForm.setAttribute("method", "post");
     newInput.id = "privMess".concat(corres);
     newInput.setAttribute("type", "text");
+    newInput.setAttribute("value", "");
     newButton.setAttribute("type", "submit");
     newButton.innerText = "Send";
+    // mise en forme de la div et implémentation dans le DOM
     newDiv.appendChild(blabla);
     newDiv.appendChild(newForm)
     newForm.appendChild(newInput);
     newForm.appendChild(newButton);
     document.body.appendChild(newDiv);
+    // Lancement de la fonction qui gère le flux des messages privés
     chatprive(corres);
 };
 
@@ -104,8 +122,7 @@ function chatprive (corres) {
     $('#'.concat(pseudo).concat('-').concat(corres)).submit(function () {
         var message = $('#privMess'.concat(corres)).val();
         socket.emit('privMess', message, corres); // Transmet le message au serveur pour qu'il retransmette aux autres
-        $('#privMess').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+        $('#privMess'.concat(corres)).val('').focus(); // Vide la zone de Chat et remet le focus dessus
         return false; // Permet de bloquer l'envoi "classique" du formulaire
     });
-    console.log("chat privé");
 }

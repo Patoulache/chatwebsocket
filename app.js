@@ -10,7 +10,8 @@ var express = require('express'),
 
     ent = require('ent'), // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
 
-    coUsers = {};
+    coUsers = {}; // tableau utilisateurs connectés
+    idUsers = {}; // tableau id users.
     
 
 
@@ -33,6 +34,7 @@ io.sockets.on('connection', function (socket) {
         socket.broadcast.emit('nouveau_client', pseudo); // envoie nouveau connecté
         console.log(socket.pseudo + ' connected');
         coUsers[socket.pseudo] = socket.pseudo;
+        idUsers[socket.pseudo] = socket.id;
         io.emit('listUsers', Object.values(coUsers)); // envoie liste user connectés
         
     });
@@ -52,18 +54,15 @@ io.sockets.on('connection', function (socket) {
     socket.on('message', function (message) {
 
         message = ent.encode(message);
-
         io.emit('message', {pseudo: socket.pseudo, message: message});
 
     });
 
     // Dès qu'on reçoit un message, on récupère le pseudo de son auteur et on letransmet aux autres personnes
-    socket.on('privMess', function (message, corres) {
-        console.log(message);
-        console.log(corres);        
+    socket.on('privMess', function (message, corres) {      
         message = ent.encode(message);
-        socket.to(corres).emit('privMess', {pseudo: socket.pseudo, message: message, corres: corres});
-        socket.emit('privMess', {pseudo: socket.pseudo, message: message, corres: corres});
+        socket.broadcast.to(idUsers[corres]).emit('privMess', {pseudo: socket.pseudo, message: message, corres: corres});
+        socket.emit('privMess', {pseudo: socket.pseudo, message: message, corres: corres})
 
     });
 
